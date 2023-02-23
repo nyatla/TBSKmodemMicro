@@ -78,7 +78,7 @@ class TbskPulseModulator:
             iter1:ptr=iter(self._preamble)
             iter2:ptr=iter(data)
             for i in range(tl):
-                yield i%3
+                yield (i%3) & 0x01
             for i in iter1:
                 for j in range(tl):
                     yield (i ^ (tb[j//8]>>(7-j%8))) #int
@@ -86,7 +86,7 @@ class TbskPulseModulator:
                 for j in range(tl):
                     yield (i ^ (tb[j//8]>>(7-j%8))) #int
             for i in range(tl): #suffix
-                yield i%3
+                yield (i%3) & 0x01
         return G()
     @micropython.native
     def gpioTx(self,bits:array,carrier:int,pin:Pin):
