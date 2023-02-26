@@ -78,19 +78,20 @@ class TbskPulseModulator:
             iter1:ptr=iter(self._preamble)
             iter2:ptr=iter(data)
             for i in range(tl):
-                yield i%3
+                yield (i%3) & 0x01
             for i in iter1:
                 for j in range(tl):
                     yield (i ^ (tb[j//8]>>(7-j%8))) #int
             for i in iter2:
+                print(i)
                 for j in range(tl):
                     yield (i ^ (tb[j//8]>>(7-j%8))) #int
             for i in range(tl): #suffix
-                yield i%3
+                yield (i%3) & 0x01
         return G()
     @micropython.native
-    def gpioTx(self,bits:array,carrier:int,pin:Pin):
-        bits=self.modulete(array("B",b"Hello TBSKmodem from Micro Python."))
+    def gpioTx(self,pin:Pin,carrier:int,bits:array):
+        bits=self.modulete(bits)
         INTERVAL_US=(1000000//carrier) #8kHz period setting
         INTERVAL_DC=0 if 1000000%carrier==0 else (int)(carrier/(1000000%carrier))
         target :int= ticks_us()
@@ -117,7 +118,7 @@ tmm=TbskPulseModulator()
 gc.collect()
 gc.disable()
 tmm.gpioTx(
-    array("B",b"Hello TBSKmodem from Micro Python."),
-    16000,Pin(2, Pin.OUT, Pin.PULL_DOWN))
+	Pin(2, Pin.OUT, Pin.PULL_DOWN),16000,
+	array("B",b"Hello TBSKmodem from Micro Python.")
+)
 gc.enable()
-

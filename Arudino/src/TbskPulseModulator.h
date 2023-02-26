@@ -1,3 +1,5 @@
+#pragma once
+
 #if defined(ASSERT)
     #define TBSK_ASSERT(E) ASSERT(E)
 #else
@@ -171,16 +173,18 @@ namespace TBSKmodemMicro
 
     /** Preambleビット列のイテレータです。
      */
-    template <TMM_UINT16 PREAMBLE_CYCLE>class PreambleIter :public IBitIterator {
+    class PreambleIter :public IBitIterator {
     private:
+        const TMM_UINT16 _cycle;
         TMM_UINT16 _c;
         TMM_UINT16 _n;
         TMM_UINT16 _co;
     public:
         const TMM_UINT16 size;
     public:
-        PreambleIter() :
-            size{ (TMM_UINT16)(2 + PREAMBLE_CYCLE * 2 + 1 + 3) },
+        PreambleIter(TMM_UINT16 cycle) :
+            _cycle{cycle},
+            size{ (TMM_UINT16)(2 + cycle * 2 + 1 + 3) },
             _c{ 0 },
             _n{ 0 },
             _co{ 0 }
@@ -212,7 +216,7 @@ namespace TBSKmodemMicro
                 }
                 return c % 2;//0,1
             case 1:
-                if (n >= PREAMBLE_CYCLE) {
+                if (n >= this->_cycle) {
                     this->_co++;
                     this->_n = 0;
                 }
@@ -222,7 +226,7 @@ namespace TBSKmodemMicro
                 this->_n = 0;
                 return 1;//[1]
             case 3:
-                if (n >= PREAMBLE_CYCLE) {
+                if (n >= this->_cycle) {
                     this->_co++;
                     this->_n = 0;
                 }
@@ -232,7 +236,7 @@ namespace TBSKmodemMicro
                     this->_co++;
                     this->_n = 0;
                 }
-                return ((n / 3) + (PREAMBLE_CYCLE % 2)) % 2;//c,c,!c
+                return ((n / 3) + (this->_cycle % 2)) % 2;//c,c,!c
             default:
                 return 0;//OMG
             }
@@ -241,19 +245,19 @@ namespace TBSKmodemMicro
 
     /**
      */
-    template <TMM_UINT16 PREAMBLE_CYCLE> class PulseIter :public IBitIterator
+    class PulseIter :public IBitIterator
     {
     private:
         TMM_UINT16 _n;
         TMM_UINT16 _co;
         TMM_UINT16 _tval;
-        PreambleIter<PREAMBLE_CYCLE> _preamble;
+        PreambleIter _preamble;
         BitArray* _tone;
         DataBits _data;
 
     public:
-        PulseIter() :
-            _tval{ 0 }, _co{ 0 }, _n{ 0 }, _tone{NULL}
+        PulseIter(TMM_UINT16 preamble_cycle) :
+            _tval{ 0 }, _co{ 0 }, _n{ 0 }, _tone{NULL},_preamble(PreambleIter(preamble_cycle))
         {
         }
         void init(BitArray* ref_tone,const TMM_UINT8* data, size_t size) {
@@ -315,12 +319,12 @@ namespace TBSKmodemMicro
         }
     };
     
-    template <int PREAMBLE_SIZE=4, int TONE_SIZE=100>  class TbskPulseModulator
+    template <int TONE_SIZE=100>  class TbskPulseModulator
     {
         PnBits<TONE_SIZE> _pn;
-        PulseIter<PREAMBLE_SIZE> _pulse;
+        PulseIter _pulse;
     public:
-        TbskPulseModulator(int seed=299) {
+        TbskPulseModulator(int preamble_cycle=4,int seed = 299) :_pulse{PulseIter(preamble_cycle)} {
             this->_pn.setRandom((TMM_INT16)seed);
         }
         IBitIterator& modulate(const char src[],int srclen=-1) {
