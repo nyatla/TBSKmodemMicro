@@ -90,7 +90,7 @@ class TbskPulseModulator:
         return G()
     @micropython.native
     def gpioTx(self,bits:array,carrier:int,pin:Pin):
-        bits=self.modulete(array("B",b"Hello TBSKmodem from Micro Python."))
+        bits=self.modulete(bits)
         INTERVAL_US=(1000000//carrier) #8kHz period setting
         INTERVAL_DC=0 if 1000000%carrier==0 else (int)(carrier/(1000000%carrier))
         target :int= ticks_us()
