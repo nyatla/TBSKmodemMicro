@@ -37,7 +37,7 @@ TBSKmodemの送信機能には、デジタル出力が可能なGPIOピンが1Pin
 2. 受信用のプログラムを起動します。PC,スマートフォンならば、[ライブデモ](https://nyatla.jp/tbskmodem/)が便利です。
 3. getstartedにあるSendHello.pyを開きます。
 4. 実行するとスピーカーから音が鳴り、１度だけメッセージを送信します。
-5. 受信プログラムに**Hello TBSKmodem from Micro Python.**と表示されれば成功です。
+5. 受信プログラムに<b>Hello TBSKmodem from Micro Python. </b>と表示されれば成功です。
 
 
 送信したメッセージは、ライブデモ、または他のプラットフォームのTBSKmodemで復調することができます。
