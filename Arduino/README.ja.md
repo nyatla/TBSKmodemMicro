@@ -34,6 +34,7 @@ Arduino IDEでTBSKmodemMicroを使う方法です。
 
 1. 以下のように配線します。GP2ピンとGNDに圧電素子を接続し、保護用のクリッピングダイオードをVCCとGNDに接続します。
 <img src="https://user-images.githubusercontent.com/2483108/221571659-862a3138-616e-430c-8516-73b77d2e412f.png" width="30%">
+
 2. 受信用のプログラムを起動します。PC,スマートフォンならば、[ライブデモ](https://nyatla.jp/tbskmodem/)が便利です。
 3. Arduino IDEのファイル→スケッチ例→TbskModemMicroから、SendHelloを選択して開きます。
 4. RaspberryPi picoを書き込みモードで起動します。BOOTSELを押しながら電源を入れます。
