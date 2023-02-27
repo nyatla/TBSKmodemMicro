@@ -14,15 +14,11 @@ RaspberyPi picoのMicroPythonでTBSKmodemMicroを使う方法です。
 
 ## 手動セットアップ
 
-1. [github](https://github.com/nyatla/TBSKmodemMicro/releases)からTbskModemMicro-MicroPython.zipをダウンロードします。
+1. [github](https://github.com/nyatla/TBSKmodemMicro/releases)からTbskModemMicro.zipをダウンロードします。
 3. Thonnyを起動して、MicropythonをセットアップしたRaspberry Pi Picoを接続します。
-4. ライブラリをRaspberry pi picoへコピーします。次のようにファイルを配置します。
+4. ライブラリをRaspberry pi picoへコピーします。MicroPython/RP2040/tbskmicroにあるファイルを、次のように配置します。
 
-```
-+tbskmicro
- +-__init__.py
- +-TBSKPulseModulator.py
-```
+<img src="https://user-images.githubusercontent.com/2483108/221583781-5c0df85d-7106-4ed6-89b8-efc91524fbb5.png" width="30%">
 
 
 
