@@ -1,23 +1,23 @@
 # TBSKmodem for MicroChip
 
-この実装は、計算資源の少ないマイコン向けに最小限の機能を実装したTBSKmodemです。
+TBSKmodem for MicroChipは、計算資源の少ないマイコン向けに最小限の機能を実装したTBSKmodemです。
+
+転送速度は80～160baud、到達距離は30cm以内で、音響によるワイヤレス伝送機能が利用できます。
+
 🐓[TBSKmodem](https://github.com/nyatla/TBSKmodem/)
 
 
-GPIOピン1本と音声出力デバイス(圧電素子、またはスピーカー)で、音響によるTBSK変調信号の送信機能が利用できます。
 
+![Preview](https://user-images.githubusercontent.com/2483108/221571971-f157b84f-d632-4287-88c1-02889955692c.png)
 
-
-※TBSK (Trait Block Shift Keying) modem は、低速、短距離の音響通信の実装です。FFT/IFFTを使用しないので計算資源の乏しいハードウェアでも動作します。
+利用には、GPIOピン1本とそこに接続した音声出力デバイス(圧電素子、またはスピーカー)が必要です。
 
 
 
 # GetStarted
 
-- Arduino
-- MicroPython
-
-
+- [Arduino](https://github.com/nyatla/TBSKmodemMicro/blob/main/Arduino/README.ja.md) ArduinoIDEでの使い方
+- [MicroPython](https://github.com/nyatla/TBSKmodemMicro/blob/main/MicroPython/README.ja.md) Thonnyでの使い方
 
 # License
 
