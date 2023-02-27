@@ -7,7 +7,6 @@
 from array import array
 from machine import Pin
 from utime import ticks_diff,ticks_us,ticks_add
-import gc
 import random
 
 class BitArray:#(Iterator[int]):
@@ -83,19 +82,22 @@ class TbskPulseModulator:
                 for j in range(tl):
                     yield (i ^ (tb[j//8]>>(7-j%8))) #int
             for i in iter2:
-                print(i)
                 for j in range(tl):
                     yield (i ^ (tb[j//8]>>(7-j%8))) #int
             for i in range(tl): #suffix
                 yield (i%3) & 0x01
         return G()
     @micropython.native
-    def gpioTx(self,pin:Pin,carrier:int,bits:array):
-        bits=self.modulete(bits)
-        INTERVAL_US=(1000000//carrier) #8kHz period setting
+    def write(self,pin:Pin,carrier:int,src:array):
+        """ srcをTBSK変調して、pinに周波数carrierの信号を出力します。
+            @params carrier
+            出力信号の周波数です。RaspberyPiPico(120MHz)の場合は16000が上限です。
+        """
+        bits=self.modulete(src)
+        INTERVAL_US=(1000000//carrier) #period setting
         INTERVAL_DC=0 if 1000000%carrier==0 else (int)(carrier/(1000000%carrier))
         target :int= ticks_us()
-        starget:int=target
+        #starget:int=target
         c:int=0
         #start_1=ticks_us()
         for i in bits:
@@ -108,17 +110,6 @@ class TbskPulseModulator:
                     target=target-k
                 if INTERVAL_DC!=0 and c%INTERVAL_DC==0:
                     target=target+1
-                pin.value(i) #125us毎に呼び出されるのを期待している。
+                pin.value(i) #1/carrier[s]毎に呼び出されるのを期待している。
                 break
             c=c+1        
-
-
-
-tmm=TbskPulseModulator()
-gc.collect()
-gc.disable()
-tmm.gpioTx(
-	Pin(2, Pin.OUT, Pin.PULL_DOWN),16000,
-	array("B",b"Hello TBSKmodem from Micro Python.")
-)
-gc.enable()
