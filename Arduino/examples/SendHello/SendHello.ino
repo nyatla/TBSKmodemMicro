@@ -1,11 +1,11 @@
 // This sketch sends a 16kHz-160bps TBSK modulated message from
 // a device connected to the GPIO output. It can be received by
 // the TBSKmodem receiver. https://nyatla.jp/tbskmodem/
-#include "data/TbskModemMicro.h"
+#include "TbskModemMicro.h"
 using namespace TBSKmodemMicro;
 
-int LED_PIN=25
-int SPK_PIN=2
+#define LED_PIN 25
+#define SPK_PIN 2
 TbskPulseModulator<100> tpm;
 void setup() {
   pinMode(LED_PIN, OUTPUT);  //LED
