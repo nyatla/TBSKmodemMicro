@@ -1,9 +1,7 @@
-//#include "../../../src/classes/AverageInterator16.h"
-//#include "../../../src/classes/SumIterator16.h"
+#pragma once
 #include "./RingBuffer16.h"
 #include "./FF16SelfCorrcoefIterator.h"
 
-#include <vector>
 #include <memory>
 
 

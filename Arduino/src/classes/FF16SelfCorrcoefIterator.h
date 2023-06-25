@@ -1,7 +1,7 @@
-﻿#include "../../src/TbskModemMicro.h"
+﻿#pragma once
+#include "types.h"
 #include "../../src/classes/RingBuffer16.h"
 
-#include <vector>
 #include <memory>
 namespace TBSKmodemMicro
 {

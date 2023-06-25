@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "./TbskPulseModulator.h"
+#include "./classes/TbskPulseModulator.h"
 
 namespace TBSKmodemMicro
 {
