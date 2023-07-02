@@ -54,7 +54,7 @@ namespace TBSKmodemMicro
 			//# 探索開始位置 RBの後端からsize_back戻ったところ
 			RefIterator<TMM_INT16> v_siter;
 			auto& siter = this->subIter(buflen - size_back, size_back, v_siter);
-			TMM_INT16 a[3];
+			TMM_INT16 a[3] = {};
 			for (auto i = 0;i < 3;i++) {
 				a[i] = siter.next();
 

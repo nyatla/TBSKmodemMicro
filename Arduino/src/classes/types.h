@@ -12,6 +12,9 @@
     void digitalWrite(int pin, int v) {
         printf("DW:%d\n", v);
     }
+    int analogRead(int pin) {
+        return 0;
+    }
     time_t micros()
     {
         return clock();

@@ -107,7 +107,7 @@ namespace TBSKmodemMicro
                 this->_block_skip_counter = this->_block_skip_counter - 1;
             }
 
-            TMM_INT32 samples[3];
+            TMM_INT32 samples[3] = {};
             for (size_t i = 0;i < 3;i++) {
                 if (!lavefilter.hasNext()) {
                     //終端
@@ -125,7 +125,7 @@ namespace TBSKmodemMicro
             }
             else {
                 //#全ての相関値が同じ符号
-                TMM_INT32 asamples[3];
+                TMM_INT32 asamples[3] = {};
                 for (size_t i = 0;i < 3;i++) {
                     asamples[i] = abs(samples[i]);
                 }
