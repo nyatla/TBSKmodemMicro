@@ -56,7 +56,7 @@ namespace TBSKmodemMicro
 		/// </summary>
 		/// <param name="src"></param>
 		/// <param name="limit">返却値の最大数。-1でinfinite</param>
-		LimitedIter(IPyIterator<TMM_INT16>& src, TMM_INT32 limit) :_src(src), _limit(0)
+		LimitedIter(IPyIterator<TMM_INT16>& src, TMM_INT32 limit) :_src(src), _limit(limit)
 		{
 		}
 		TMM_INT16 next() {
@@ -103,7 +103,8 @@ namespace TBSKmodemMicro
 		TMM_INT16 next()
 		{
 			this->_ticktack.wait();
-			TMM_INT32 v = (((TMM_INT32)analogRead(this->_pin)) - (this->_adc_bits >> 1)) * 0x7fff;
+			TMM_INT32 of = (TMM_INT32)1 << (this->_adc_bits - 1);
+			TMM_INT32 v = (((TMM_INT32)analogRead(this->_pin)) - of);
 			return v>0x7ffff?0x7ffff:(v<-0x7ffff?-0x7ffff:v);
 		};
 		bool hasNext()
@@ -154,7 +155,7 @@ namespace TBSKmodemMicro
 		/// <param name="buf"></param>
 		/// <param name="buf_len"></param>
 		/// <returns></returns>
-		int demodulate(IPyIterator<TMM_INT16>& src, void* buf, size_t buf_len)
+		int demodulate(IPyIterator<TMM_INT16>& src, void* buf, int buf_len)
 		{
 			//トリガ検出
 			TMM_INT32 pd_pos = 0;
@@ -175,7 +176,7 @@ namespace TBSKmodemMicro
 				}
 				//デコード
 				TraitBlockDecoder<TONE_SIZE> bd(src, 0.2f);
-				for (auto i = 0;i < buf_len;i++) {
+				for (int i = 0;i < buf_len;i++) {
 					TMM_UINT8 w = 0;
 					for (auto j = 0;j < 8;j++) {
 						if (!bd.hasNext()) {
@@ -193,21 +194,21 @@ namespace TBSKmodemMicro
 			BufIterator src_((TMM_INT16*)src, src_len);
 			return this->demodulate(src_, buf, buf_len);
 		}
-		int read(int pin, void* buf, int buf_len, int timeout_in_ms) {
-			return this->read(pin, buf, buf_len, timeout_in_ms);
+		int read(int pin, int carrier,void* buf, int buf_len, int timeout_in_ms) {
+			return this->read(pin, carrier,buf, buf_len, timeout_in_ms,NULL);
 		}
 		/// <summary>
 		/// この関数は、最大でtimeout_in_msだけ信号の受信を待機して、
 		/// 検出された場合に、最大でbuf_lenバイトのデータを読み取ります。
 		/// callbackが非NULLの場合は同期してイベントを通知します。
 		/// </summary>
-		int read(int pin, void* buf, int buf_len, int timeout_in_ms,const ReadCallback* callback)
+		int read(int pin, int carrier, void* buf, int buf_len, int timeout_in_ms,const ReadCallback* callback)
 		{
-			DigitalInIterator di(pin, this->_carrier);
+			DigitalInIterator di(pin,carrier);
 			{
 				TMM_INT32 pd_pos = 0;
 				//制限付きIterを構成
-				LimitedIter src(di, (TMM_INT32)(this->_carrier * timeout_in_ms / 1000));
+				LimitedIter src(di, (TMM_INT32)(carrier * timeout_in_ms / 1000));
 				{	//制限付きで検出
 					CoffPreambleDetector<4, TONE_SIZE> pd(src, 1.0f);
 					if (!pd.hasNext()) {
@@ -228,7 +229,7 @@ namespace TBSKmodemMicro
 			}
 			TraitBlockDecoder<TONE_SIZE> bd(di, 0.2f);
 			TMM_UINT8* b = (TMM_UINT8*)buf;
-			size_t i = 0;
+			int i = 0;
 			for (;i < buf_len && bd.hasNext();i++) {
 				TMM_UINT8 w = 0;
 				for (auto j = 0;j < 8;j++) {

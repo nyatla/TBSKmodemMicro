@@ -29,6 +29,7 @@ class TbskSocket {
 #include <vector>
 #define TONE_SIZE_	100
 
+const TMM_INT16 D[] = { 0,0,0,0,0, };
 int main()
 {
 
@@ -41,14 +42,14 @@ int main()
 		v = v > 0 ? v * 32767 : v * 32768;
 		src2.push_back((TMM_INT16)v);
 	}
-
+	dbg_initAnalogData(D,5);
 	TbskDemodulator<TONE_SIZE_> dem;
 	BufIterator src(src2.data(), (TMM_INT16)src2.size());
 	TMM_UINT8 dest[10] = {};
-	int r = dem.demodulate(src, dest, 10);
+	//int r = dem.demodulate(src, dest, 10);
 	int r2 = -1;
 	while (r2 == -1) {
-		r2 = dem.read(1, dest, 10, 1000);
+		r2 = dem.read(1,16000, dest, 10, 10000);
 	}
 
 

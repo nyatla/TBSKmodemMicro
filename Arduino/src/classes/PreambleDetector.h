@@ -8,7 +8,7 @@
 
 #define FLOAT_TO_FF32(v) ((TMM_INT32)(v>0?v*32767:v*32768))	//FLOATを16bit固定小数点 s.0.15 [-1,1]に変換する
 #define FLOAT_TO_FF16(v) ((TMM_INT16)(v>0?v*32767:v*32768))	//FLOATを16bit固定小数点 s.0s15 [-32768,32767]に変換する
-#define FF16_TO_FLOAT(v) ((v>0?(float)v/32767:(float)v/32768))	//FLOATを16bit固定小数点 s.0s15 [-32768,32767]に変換する
+#define FF16_TO_FLOAT(v) ((TMM_INT16)((v>0?(float)v/32767:(float)v/32768)))	//FLOATを16bit固定小数点 s.0s15 [-32768,32767]に変換する
 
 namespace TBSKmodemMicro
 {
