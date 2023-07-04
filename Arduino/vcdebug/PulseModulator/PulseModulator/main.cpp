@@ -46,7 +46,7 @@ int main()
 	TbskDemodulator<TONE_SIZE_> dem;
 	BufIterator src(src2.data(), (TMM_INT16)src2.size());
 	TMM_UINT8 dest[10] = {};
-	//int r = dem.demodulate(src, dest, 10);
+	int r = dem.demodulate(src, dest, 10);
 	int r2 = -1;
 	while (r2 == -1) {
 		r2 = dem.read(1,16000, dest, 10, 10000);

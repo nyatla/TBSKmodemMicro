@@ -81,30 +81,28 @@ namespace TBSKmodemMicro
 		/// 制限を解除する
 		/// </summary>
 		void clear() {
-			this->_limit = 0xffffffff;
+			this->_limit = -1;
 		}
 	};
 
 
-	class DigitalInIterator :public IPyIterator<TMM_INT16>
+	template <int ADC_BITS> class DigitalInIterator :public IPyIterator<TMM_INT16>
 	{
 	private:
 		TickTack _ticktack;
 		int _pin;
-		int _adc_bits;
 	public:
-		DigitalInIterator(int pin, TMM_UINT16 carrier,int adc_bits=12) :
+		DigitalInIterator(int pin, TMM_UINT16 carrier) :
 			_ticktack(TickTack((1000 << 3) / (carrier / 1000))),
-			_pin(pin),
-			_adc_bits(adc_bits)
+			_pin(pin)
 		{
 			this->_ticktack.reset();
 		}
 		TMM_INT16 next()
 		{
 			this->_ticktack.wait();
-			TMM_INT32 of = (TMM_INT32)1 << (this->_adc_bits - 1);
-			TMM_INT32 v = (((TMM_INT32)analogRead(this->_pin)) - of);
+			TMM_INT32 of = (TMM_INT32)1 << (ADC_BITS - 1);
+			TMM_INT32 v = (((TMM_INT32)analogRead(this->_pin)) - of)<<(16- ADC_BITS);
 			return v>0x7ffff?0x7ffff:(v<-0x7ffff?-0x7ffff:v);
 		};
 		bool hasNext()
@@ -129,7 +127,7 @@ namespace TBSKmodemMicro
 	/// <param name="buf"></param>
 	/// <param name="buf_len"></param>
 	/// <returns></returns>
-	template <TMM_INT16 TONE_SIZE> class TbskDemodulator
+	template <TMM_INT16 TONE_SIZE,int ADC_BITS=12> class TbskDemodulator
 	{
 	public:
 		/// <summary>
@@ -204,7 +202,7 @@ namespace TBSKmodemMicro
 		/// </summary>
 		int read(int pin, int carrier, void* buf, int buf_len, int timeout_in_ms,const ReadCallback* callback)
 		{
-			DigitalInIterator di(pin,carrier);
+			DigitalInIterator<ADC_BITS> di(pin,carrier);
 			{
 				TMM_INT32 pd_pos = 0;
 				//制限付きIterを構成
@@ -216,6 +214,7 @@ namespace TBSKmodemMicro
 					}
 					pd_pos = pd.next();
 				}
+				src.clear();
 				//信号の先頭まで移動
 				for (size_t i = 0;i < TONE_SIZE + pd_pos;i++) {
 					if (!src.hasNext()) {
@@ -230,7 +229,7 @@ namespace TBSKmodemMicro
 			TraitBlockDecoder<TONE_SIZE> bd(di, 0.2f);
 			TMM_UINT8* b = (TMM_UINT8*)buf;
 			int i = 0;
-			for (;i < buf_len && bd.hasNext();i++) {
+			for (auto i=0;i < buf_len && bd.hasNext();i++) {
 				TMM_UINT8 w = 0;
 				for (auto j = 0;j < 8;j++) {
 					if (!bd.hasNext()) {
@@ -243,7 +242,7 @@ namespace TBSKmodemMicro
 			if (callback) {
 				callback->onLost();
 			}
-			return i;
+			return buf_len;
 		}
 	};
 }

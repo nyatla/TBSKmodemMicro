@@ -10,7 +10,7 @@ namespace TBSKmodemMicro
      */
     class TickTack {
         TMM_UINT16 _interval;// = 1 / 8; // 1/8 us tick
-        TMM_UINT16 _expire = 0;
+        TMM_UINT32 _expire = 0;
     public:
         /**
          * この関数を呼び出してからwaitを呼び出すまでの時間は4096us以内にすること。
@@ -22,25 +22,26 @@ namespace TBSKmodemMicro
             this->reset();
         }
         void reset() {
-            this->_expire = ((0x1FFF & micros()) << 3) + this->_interval;//init
+            this->_expire = ((0x1FFFFFFF & micros()) << 3) + this->_interval;//init
         }
         /**
          * 最後にwait,またはresetを呼び出してからinterval以上経過するまでまつ。
          * 前回の呼び出しから4096us以上が経過した場合は正常に動作しない。
          */
         void wait() {
-            TMM_UINT16 next = this->_expire + this->_interval;
-            TMM_UINT16 now = (0x1FFF & micros()) << 3;//init
-            TMM_UINT16 expire = this->_expire;
-            TMM_UINT16 d = expire - now;
-            if (d >= 0x7FFFF) {
-                //expired
+            TMM_UINT32 next = this->_expire + this->_interval;
+            TMM_UINT32 now = (0x1FFFFFFF & micros()) << 3;//init
+            TMM_UINT32 expire = this->_expire;
+            TMM_UINT32 d = expire - now;//残待機時間
+            if (d >= 0x80000000) {
+                //待機時間が負->即時返却
                 this->_expire = next;
                 return;
             }
             while (true) {
-                TMM_UINT16 now = (0x1FFF & micros()) << 3;//init
-                if ((TMM_UINT16)(expire - now) > d) {
+                TMM_UINT32 now = (0x1FFFFFFF & micros()) << 3;//init
+                if ((TMM_UINT32)(expire - now) > 0x80000000) {
+                    //待機時間が負->即時返却
                     this->_expire = next;
                     return;
                 }

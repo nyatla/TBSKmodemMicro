@@ -86,7 +86,8 @@ namespace TBSKmodemMicro
 			const TMM_INT16 FP7 = 7;	//7 bit signed ff
 
 			const auto l = WINDOW;
-			TMM_INT16 m = this->c % l;
+			TMM_INT16 m = this->c;
+			this->c = (this->c + 1) % l;
 			TMM_INT16 vx = this->_srcx->next();
 			TMM_INT16 srcy_ptr = this->_srcy_ptr;
 			TMM_INT16 vy = this->_srcy[srcy_ptr];
@@ -110,7 +111,6 @@ namespace TBSKmodemMicro
 			this->xyi_y[m] = vy;	//s+15bit
 
 
-			this->c += 1;
 			if (n == 1) {
 				return 1;
 			}

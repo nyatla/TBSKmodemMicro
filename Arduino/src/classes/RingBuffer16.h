@@ -68,7 +68,6 @@ namespace TBSKmodemMicro
             auto& b = this->_buf;
             const auto length = SIZE;
             auto ret = b[this->_p];
-            printf("%d\n",this->_p);
             b[this->_p] = v;
             this->_p = (this->_p + 1) % length;
             return ret;
