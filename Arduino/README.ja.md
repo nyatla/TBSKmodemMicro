@@ -2,7 +2,7 @@
 
 Arduino IDEでTBSKmodemMicroを使う方法です。
 
-現在のライブラリには受信機能はありませんので、PCやスマートフォンで動作する他の実装の受信機能でテストしてください。
+対向デバイスにはPCやスマートフォンで動作する他の実装をお勧めします。
 
 + [TBSKmodem Live demo](https://nyatla.jp/tbskmodem/)
 + [TBSKmodem for Python](https://github.com/nyatla/TBSKmodem)
