@@ -14,15 +14,18 @@ TbskDemodulator<100> dem;
 
 void setup() {
   pinMode(LED_PIN, OUTPUT);  //LED
+  pinMode(AD_PIN, INPUT);
+  pinMode(SP_PIN, OUTPUT);
+  analogReadResolution(12);
 }
 
 void loop()
 {
   int r=-1;
-	TMM_UINT8 recv[10] = {};  
+  TMM_UINT8 recv[10] = {};
   digitalWrite (LED_PIN,HIGH);
-  analogReadResolution(12);
 
+  pinMode(AD_PIN, INPUT);
   while(r==-1){
      r=dem.read(AD_PIN,16000,recv,10,5000);
   }
@@ -36,4 +39,3 @@ void loop()
   tpm.write(SP_PIN,16000,(const char*)send,r+5);
 
   return;
-}
