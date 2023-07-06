@@ -92,7 +92,7 @@ namespace TBSKmodemMicro
         PnBits<TONE_SIZE> _pn;
         PulseIter _pulse;
     public:
-        TbskPulseModulator(int preamble_cycle=4,int seed = 299) :_pulse{preamble_cycle} {
+        TbskPulseModulator(int preamble_cycle=4,int seed = 299) :_pulse{(TMM_UINT16)preamble_cycle} {
             this->_pn.setRandom((TMM_INT16)seed);
         }
         IBitIterator& modulate(const char src[],int srclen=-1) {
